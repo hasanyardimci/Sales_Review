@@ -3,7 +3,6 @@ import time
 from generateEnv import gen_env, gen_city, gen_numbers
 from faker.generator import random
 
-# app_dir = "/var/log/Generate/"
 app_dir = 'output/'
 random_review = 1
 
