@@ -3,9 +3,11 @@ import os
 
 class Correction:
 
+
     def __init__(self):
         self.reviewsArray = []
         self.salesArray = []
+        self.appPath = os.getcwd() + "/output"
 
     def replaceFile(self):
         pass
@@ -17,12 +19,14 @@ class Correction:
         pass
 
     def findFileReview(self):
+        os.chdir(self.appPath)
         for reviews in os.listdir():
-            if "review" in reviews and "C" not in reviews:
+            if "review" in reviews and "S" not in reviews:
                 self.reviewsArray.append(reviews)
         return self.reviewsArray
 
     def findFileSales(self):
+        os.chdir(self.appPath)
         for sales in os.listdir():
             if "sales" in sales and "C" not in sales:
                 self.salesArray.append(sales)
