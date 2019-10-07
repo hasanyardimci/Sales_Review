@@ -18,10 +18,10 @@ class Salesman:
                 "city_name": city_name}
 
     def write_review(self, review_score, sales_id):
-        return {"store_id": self.store_id,
-                "e_id": self.e_id,
-                "review_score": review_score,
-                "sales_id": sales_id}
+        return {"store_id": str(self.store_id),
+                "e_id": str(self.e_id),
+                "review_score": str(review_score),
+                "sales_id": str(sales_id)}
 
 
 class Store:
