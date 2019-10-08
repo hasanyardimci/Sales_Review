@@ -1,12 +1,10 @@
 import os
 
 
-class Correction:
-
+class CorrectionReview:
 
     def __init__(self):
-        self.reviewsArray = []
-        self.salesArray = []
+        self.file_array = []
         self.appPath = os.getcwd() + "/output"
 
     def replaceFile(self):
@@ -18,24 +16,18 @@ class Correction:
     def readFile(self):
         pass
 
-    def findFileReview(self):
+    def find_file(self, file_type, flag_letter):
+        self.file_array = []
         os.chdir(self.appPath)
-        for reviews in os.listdir():
-            if "review" in reviews and "S" not in reviews:
-                self.reviewsArray.append(reviews)
-        return self.reviewsArray
-
-    def findFileSales(self):
-        os.chdir(self.appPath)
-        for sales in os.listdir():
-            if "sales" in sales and "C" not in sales:
-                self.salesArray.append(sales)
-        return self.salesArray
+        for file_name in os.listdir():
+            if file_type in file_name and flag_letter not in file_name:
+                self.file_array.append(file_name)
+        return self.file_array
 
 
-a = Correction()
-r = a.findFileReview()
-s = a.findFileSales()
+a = CorrectionReview()
+r = a.find_file('review','C')
+s = a.find_file('sales', 'S')
 print(r)
 print(s)
 
