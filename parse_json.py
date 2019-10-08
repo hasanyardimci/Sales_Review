@@ -1,8 +1,12 @@
 import json
+import os
+from converttojson import find_file
 
-with open('/Users/hsn/Desktop/MyRepos/Sales_Review/output/review_1570447686_1.txt', 'r') as f:
-    y = json.load(f)
-    print (y['e_id'])
-'''
-for line in f:
-'''
+file_array = []
+appPath = os.getcwd() + "/output"
+file_array_all = find_file('json')
+for file_name in file_array_all:
+    f = open(file_name, 'r')
+    for line in f:
+        y = json.loads(line)
+        print(y['store_id'])
