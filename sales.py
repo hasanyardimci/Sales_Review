@@ -80,16 +80,14 @@ class Logging:
         self.file_extension = file_extension
         self.file_name_sales = app_dir + 'sales_' + str(round(time.time())) + '.' + file_extension
         self.file_name_review = app_dir + 'review_' + str(round(time.time())) + '.' + file_extension
-        self.store_1 = Store(random.randint(1, 10000),
-                             random.choice(['Richmond', 'Ealing', 'Barnet', 'Hounslow', 'Merton', 'Westmister']))
-        self.store_2 = Store(random.randint(1, 10000),
-                             random.choice(['Richmond', 'Ealing', 'Barnet', 'Hounslow', 'Merton', 'Westmister']))
-        self.manager_1 = self.store_1.hired_manager(random.randint(1, 10000))
-        self.manager_2 = self.store_2.hired_manager(random.randint(1, 10000))
-        self.salesman_11 = self.store_1.hired_salesman(random.randint(1, 10000))
-        self.salesman_12 = self.store_1.hired_salesman(random.randint(1, 10000))
-        self.salesman_21 = self.store_2.hired_salesman(random.randint(1, 10000))
-        self.salesman_22 = self.store_2.hired_salesman(random.randint(1, 10000))
+        self.store_1 = Store(1, random.choice(['Richmond', 'Ealing', 'Barnet', 'Hounslow', 'Merton', 'Westmister']))
+        self.store_2 = Store(2, random.choice(['Richmond', 'Ealing', 'Barnet', 'Hounslow', 'Merton', 'Westmister']))
+        self.manager_1 = self.store_1.hired_manager(101)     #(random.randint(1, 10000))
+        self.manager_2 = self.store_2.hired_manager(201)     #(random.randint(1, 10000))
+        self.salesman_11 = self.store_1.hired_salesman(102)  #(random.randint(1, 10000))
+        self.salesman_12 = self.store_1.hired_salesman(103)  #(random.randint(1, 10000))
+        self.salesman_21 = self.store_2.hired_salesman(202)  #(random.randint(1, 10000))
+        self.salesman_22 = self.store_2.hired_salesman(203)  #(random.randint(1, 10000))
 
     def logging_events(self):
         for _ in range(1):
@@ -119,8 +117,8 @@ if __name__ == "__main__":
     '''
     App related variables..
     '''
-    sales_app_dir = "/Users/hsn/Desktop/MyRepos/Sales_Review/output5/"
-    s3_bucket_name = "salesreviewbucket1"
+    sales_app_dir = "/Users/hsn/Desktop/MyRepos/Sales_Review/output/"
+    s3_bucket_name = "salesreviewbucket"
     app_post_dir = "processed/"  # Do not forget to put "/" at the end of the directory
     
     '''
