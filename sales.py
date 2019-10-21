@@ -1,6 +1,24 @@
-import os
 import time
 import random
+import logging
+import os
+import boto3
+from botocore.exceptions import ClientError
+from boto3.exceptions import S3UploadFailedError
+
+
+def upload_file(file_name, bucket, object_name=None):
+
+    if object_name is None:
+        object_name = file_name
+
+    s3_client = boto3.client('s3')
+    try:
+        s3_client.upload_file(file_name, bucket, object_name)
+    except ClientError as client_error:
+        logging.error(client_error)
+        return False
+    return True
 
 
 class Salesman:
@@ -14,7 +32,7 @@ class Salesman:
     def sales_dict(self, sales_id, sales, item_no, city_name):
         self.sales_total += sales
         if self.is_manager == 1:
-            self.sales_total += round(sales * 1/10)
+            self.sales_total += round(sales * 1 / 10)
         return {"sales_id": sales_id,
                 "e_id": self.e_id,
                 "store_id": self.store_id,
@@ -35,7 +53,7 @@ class Salesman:
                 "sales_id": str(sales_id)}
 
     def write_review_csv(self, review_score, sales_id):
-        return str(self.store_id), str(self.e_id), str(review_score), str(sales_id)
+        return self.store_id, self.e_id, review_score, sales_id
 
 
 class Store:
@@ -87,7 +105,7 @@ class Logging:
                                                 random.randint(1, 10000),
                                                 random.choice(
                                                     ['Richmond', 'Ealing', 'Barnet', 'Hounslow', 'Merton', 'Westmister']
-                                                             )), file=f_sales)
+                                                )), file=f_sales)
                 if self.random_review == random.choice([1, 2, 3, 4, 5, 6]):
                     print(random_salesman.write_review_csv(
                         random.randint(1, 10),
@@ -97,5 +115,35 @@ class Logging:
 
 
 if __name__ == "__main__":
-    logging_start = Logging('output/', 'cvs', 1)
-    logging_start.logging_events()
+    
+    '''
+    App related variables..
+    '''
+    sales_app_dir = "/Users/hsn/Desktop/MyRepos/Sales_Review/output5/"
+    s3_bucket_name = "salesreviewbucket1"
+    app_post_dir = "processed/"  # Do not forget to put "/" at the end of the directory
+    
+    '''
+    Sales and Reviews files are generated
+    '''
+    try:
+        logging_start = Logging(sales_app_dir, 'cvs', 1)
+        logging_start.logging_events()
+    except FileNotFoundError as file_not_found_error:
+        print("File Not Found Error occurred. Detailed error is:\n", file_not_found_error)
+    
+    '''
+    AWS S3 upload operation is performed. 
+    Uploaded files are going to move to app_post_dir
+    '''
+    try:
+        for file_name_in_s3 in os.listdir(sales_app_dir):
+            if "sales" in file_name_in_s3 or "review" in file_name_in_s3:
+                os.chdir(sales_app_dir)
+                if upload_file(file_name_in_s3, s3_bucket_name) is True:
+                    os.rename(file_name_in_s3, app_post_dir + file_name_in_s3)
+    except S3UploadFailedError as s3_upload_failed_error:
+        print("S3 Upload Failed Error error with AWS S3:\n ", s3_upload_failed_error)
+    except FileNotFoundError as file_not_found_error:
+        print("File Not Found Error occurred. Detailed error is:\n", file_not_found_error)
+
