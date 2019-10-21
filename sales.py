@@ -23,9 +23,9 @@ def upload_file(file_name, bucket, object_name=None):
 
 class Salesman:
 
-    def __init__(self, is_manager, e_id, store_id):
+    def __init__(self, is_manager, employee_id, store_id):
         self.is_manager = is_manager
-        self.e_id = e_id
+        self.employee_id = employee_id
         self.store_id = store_id
         self.sales_total = 0
 
@@ -34,7 +34,7 @@ class Salesman:
         if self.is_manager == 1:
             self.sales_total += round(sales * 1 / 10)
         return {"sales_id": sales_id,
-                "e_id": self.e_id,
+                "employee_id": self.employee_id,
                 "store_id": self.store_id,
                 "sales": sales,
                 "item_no": item_no,
@@ -44,16 +44,16 @@ class Salesman:
         self.sales_total += sales
         if self.is_manager == 1:
             self.sales_total += round(sales * 1 / 10)
-        return sales_id, self.e_id, self.store_id, sales, item_no, city_name
+        return sales_id, self.employee_id, self.store_id, sales, item_no, city_name
 
     def write_review_dict(self, review_score, sales_id):
         return {"store_id": str(self.store_id),
-                "e_id": str(self.e_id),
+                "employee_id": str(self.employee_id),
                 "review_score": str(review_score),
                 "sales_id": str(sales_id)}
 
     def write_review_csv(self, review_score, sales_id):
-        return self.store_id, self.e_id, review_score, sales_id
+        return self.store_id, self.employee_id, review_score, sales_id
 
 
 class Store:
@@ -63,12 +63,12 @@ class Store:
         self.store_name = store_name
         self.store_sales = 0
 
-    def hired_salesman(self, e_id):
-        salesman = Salesman(0, e_id, self.store_id)
+    def hired_salesman(self, employee_id):
+        salesman = Salesman(0, employee_id, self.store_id)
         return salesman
 
-    def hired_manager(self, e_id):
-        manager = Salesman(1, e_id, self.store_id)
+    def hired_manager(self, employee_id):
+        manager = Salesman(1, employee_id, self.store_id)
         return manager
 
 
@@ -82,32 +82,32 @@ class Logging:
         self.file_name_review = app_dir + 'review_' + str(round(time.time())) + '.' + file_extension
         self.store_1 = Store(1, random.choice(['Richmond', 'Ealing', 'Barnet', 'Hounslow', 'Merton', 'Westmister']))
         self.store_2 = Store(2, random.choice(['Richmond', 'Ealing', 'Barnet', 'Hounslow', 'Merton', 'Westmister']))
-        self.manager_1 = self.store_1.hired_manager(101)     #(random.randint(1, 10000))
-        self.manager_2 = self.store_2.hired_manager(201)     #(random.randint(1, 10000))
-        self.salesman_11 = self.store_1.hired_salesman(102)  #(random.randint(1, 10000))
-        self.salesman_12 = self.store_1.hired_salesman(103)  #(random.randint(1, 10000))
-        self.salesman_21 = self.store_2.hired_salesman(202)  #(random.randint(1, 10000))
-        self.salesman_22 = self.store_2.hired_salesman(203)  #(random.randint(1, 10000))
+        self.manager_1 = self.store_1.hired_manager(101)
+        self.manager_2 = self.store_2.hired_manager(201)
+        self.salesman_11 = self.store_1.hired_salesman(102)
+        self.salesman_12 = self.store_1.hired_salesman(103)
+        self.salesman_21 = self.store_2.hired_salesman(202)
+        self.salesman_22 = self.store_2.hired_salesman(203)
 
     def logging_events(self):
         for _ in range(1):
             f_sales = open(self.file_name_sales, 'w')
             f_review = open(self.file_name_review, 'w')
-            for _ in range(10000):
+            for _ in range(1000):
                 random_salesman = random.choice([self.salesman_11, self.salesman_12,
                                                  self.salesman_21, self.salesman_22,
                                                  self.manager_2, self.manager_1])
                 invoice_id = random.randint(1, 10000000)
+                print("insert into sales.sales_detail values ", file=f_sales)
                 print(random_salesman.sales_csv(invoice_id,
                                                 random.randint(1, 10000),
-                                                random.randint(1, 10000),
+                                                random.randint(1, 40),
                                                 random.choice(
                                                     ['Richmond', 'Ealing', 'Barnet', 'Hounslow', 'Merton', 'Westmister']
-                                                )), file=f_sales)
+                                                )), file=f_sales, end=";\n")
                 if self.random_review == random.choice([1, 2, 3, 4, 5, 6]):
-                    print(random_salesman.write_review_csv(
-                        random.randint(1, 10),
-                        invoice_id), file=f_review)
+                    print("insert into sales.review_detail values ", file=f_review)
+                    print(random_salesman.write_review_csv(random.randint(1, 10), invoice_id), file=f_review, end=";\n")
             f_sales.close()
             f_review.close()
 
@@ -144,4 +144,3 @@ if __name__ == "__main__":
         print("S3 Upload Failed Error error with AWS S3:\n ", s3_upload_failed_error)
     except FileNotFoundError as file_not_found_error:
         print("File Not Found Error occurred. Detailed error is:\n", file_not_found_error)
-
