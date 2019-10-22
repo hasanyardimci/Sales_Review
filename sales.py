@@ -7,10 +7,7 @@ from botocore.exceptions import ClientError
 from boto3.exceptions import S3UploadFailedError
 
 
-'''
-AWS S3 Operation 
-Upload File Method
-'''
+# "AWS S3 Operation Upload File Method"
 def upload_file(file_name, bucket, object_name=None):
 
     if object_name is None:
