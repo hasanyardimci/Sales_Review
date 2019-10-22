@@ -36,7 +36,7 @@ class Salesman:
         return {"sales_id": sales_id,
                 "employee_id": self.employee_id,
                 "store_id": self.store_id,
-                "sales": sales,
+                "sales": self.sales_total,
                 "item_no": item_no,
                 "city_name": city_name}
 
@@ -44,7 +44,7 @@ class Salesman:
         self.sales_total += sales
         if self.is_manager == 1:
             self.sales_total += round(sales * 1 / 10)
-        return sales_id, self.employee_id, self.store_id, sales, item_no, city_name
+        return sales_id, self.employee_id, self.store_id, self.sales_total, item_no, city_name
 
     def write_review_dict(self, review_score, sales_id):
         return {"store_id": str(self.store_id),
@@ -100,8 +100,8 @@ class Logging:
                 invoice_id = random.randint(1, 10000000)
                 print("insert into sales.sales_detail values ", file=f_sales)
                 print(random_salesman.sales_csv(invoice_id,
-                                                random.randint(1, 10000),
                                                 random.randint(1, 40),
+                                                random.randint(1, 1000),
                                                 random.choice(
                                                     ['Richmond', 'Ealing', 'Barnet', 'Hounslow', 'Merton', 'Westmister']
                                                 )), file=f_sales, end=";\n")
@@ -125,7 +125,7 @@ if __name__ == "__main__":
     Sales and Reviews files are generated
     '''
     try:
-        logging_start = Logging(sales_app_dir, 'cvs', 1)
+        logging_start = Logging(sales_app_dir, 'sql', 1)
         logging_start.logging_events()
     except FileNotFoundError as file_not_found_error:
         print("File Not Found Error occurred. Detailed error is:\n", file_not_found_error)
