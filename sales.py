@@ -133,8 +133,8 @@ if __name__ == "__main__":
     app_post_dir = "processed/"  # Do not forget to put "/" at the end of the directory
     endpoint = "127.0.0.1:9000"
     endpoint_type = 1  # 0=AWS 1=Minio
-    access_key = "HDGURRIIEODNN7"
-    secret_key = "jdkjUYRJFNXSQsggseIK7MDENGbPxRf"
+    access_key = "access_key"
+    secret_key = "secret_key"
 
     # "Sales and Reviews files are generated"
     try:
