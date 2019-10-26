@@ -3,9 +3,9 @@ import random
 import logging
 import os
 import boto3
+from minio import Minio
 from botocore.exceptions import ClientError
 from boto3.exceptions import S3UploadFailedError
-from minio import Minio
 from minio.error import (ResponseError, InvalidEndpointError, NoSuchBucket)
 
 
@@ -24,7 +24,10 @@ def upload_file_aws(aws_file_name, bucket, object_name=None):
 
 
 # "Minio S3 Operation Upload File Method"
-def upload_file_minio(endpoint, access_key, secret_key, minio_bucket_name, minio_file_name):
+def upload_file_minio(minio_bucket_name, minio_file_name):
+    endpoint = "127.0.0.1:9000"
+    access_key = "HDGURRIIEODNN7"
+    secret_key = "jdkjUYRJFNXSQsggseIK7MDENGbPxRf"
     minio_client = Minio(endpoint, access_key, secret_key, secure=False)
     try:
         minio_client.fput_object(minio_bucket_name, minio_file_name, minio_file_name)
@@ -114,9 +117,9 @@ class Logging:
                 print(random_salesman.write_sales(invoice_id, random.randint(1, 40), random.randint(1, 1000),
                                                   random.choice(['Richmond', 'Ealing', 'Barnet',
                                                                  'Hounslow', 'Merton','Westmister'])),
-                      file=f_sales, end=";\n")
+                      file=f_sales, end="\n")
                 if self.random_review == random.choice([1, 2, 3, 4, 5, 6]):
-                    print(random_salesman.write_review(random.randint(1, 10), invoice_id), file=f_review, end=";\n")
+                    print(random_salesman.write_review(random.randint(1, 10), invoice_id), file=f_review, end="\n")
             f_sales.close()
             f_review.close()
 
@@ -127,10 +130,8 @@ if __name__ == "__main__":
     sales_app_dir = "/Users/hsn/Desktop/MyRepos/Sales_Review/output/"
     bucket_name = "salesreviewbucket"
     app_post_dir = "processed/"  # Do not forget to put "/" at the end of the directory
-    endpoint = "127.0.0.1:9000"
     endpoint_type = 1  # 0=AWS 1=Minio
-    access_key = "access_key"
-    secret_key = "secret_key"
+
 
     # "Sales and Reviews files are generated"
     try:
@@ -159,7 +160,7 @@ if __name__ == "__main__":
             for file_name in os.listdir(sales_app_dir):
                 if "sales" in file_name or "review" in file_name:
                     os.chdir(sales_app_dir)
-                    if upload_file_minio(endpoint, access_key, secret_key, bucket_name, file_name) is True:
+                    if upload_file_minio(bucket_name, file_name) is True:
                         os.rename(file_name, app_post_dir + file_name)
         except InvalidEndpointError as invalid_endpoint_error:
             print("Invalid Endpoint Error for Minio:\n ", invalid_endpoint_error)
@@ -167,3 +168,5 @@ if __name__ == "__main__":
             print("S3 Upload Failed Error error with AWS S3:\n ", response_error)
         except NoSuchBucket as no_such_bucket:
             print("No Such Bucket Name. Please check bucket name:\n", no_such_bucket)
+        except ConnectionRefusedError as conn_ref_err:
+            print("Connection Refused Error occured. Please check connection to Minio. Detail is :\n", conn_ref_err)
