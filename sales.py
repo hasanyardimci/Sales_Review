@@ -11,7 +11,6 @@ from minio.error import (ResponseError, InvalidEndpointError, NoSuchBucket)
 
 # "AWS S3 Operation Upload File Method"
 def upload_file_aws(aws_file_name, bucket, object_name=None):
-
     if object_name is None:
         object_name = aws_file_name
 
@@ -33,6 +32,7 @@ def upload_file_minio(endpoint, access_key, secret_key, minio_bucket_name, minio
     except ResponseError as err:
         print(err)
         return False
+
 
 class Salesman:
 
@@ -111,15 +111,11 @@ class Logging:
                                                  self.salesman_21, self.salesman_22,
                                                  self.manager_2, self.manager_1])
                 invoice_id = random.randint(1, 10000000)
-                print("insert into sales.sales_detail values ", file=f_sales)
-                print(random_salesman.write_sales(invoice_id,
-                                                random.randint(1, 40),
-                                                random.randint(1, 1000),
-                                                random.choice(
-                                                    ['Richmond', 'Ealing', 'Barnet', 'Hounslow', 'Merton', 'Westmister']
-                                                )), file=f_sales, end=";\n")
+                print(random_salesman.write_sales(invoice_id, random.randint(1, 40), random.randint(1, 1000),
+                                                  random.choice(['Richmond', 'Ealing', 'Barnet',
+                                                                 'Hounslow', 'Merton','Westmister'])),
+                      file=f_sales, end=";\n")
                 if self.random_review == random.choice([1, 2, 3, 4, 5, 6]):
-                    print("insert into sales.review_detail values ", file=f_review)
                     print(random_salesman.write_review(random.randint(1, 10), invoice_id), file=f_review, end=";\n")
             f_sales.close()
             f_review.close()
@@ -138,7 +134,7 @@ if __name__ == "__main__":
 
     # "Sales and Reviews files are generated"
     try:
-        logging_start = Logging(sales_app_dir, 'sql', 1)
+        logging_start = Logging(sales_app_dir, 'csv', 1)
         logging_start.logging_events()
     except FileNotFoundError as file_not_found_error:
         print("File Not Found Error occurred. Detailed error is:\n", file_not_found_error)
@@ -170,4 +166,4 @@ if __name__ == "__main__":
         except ResponseError as response_error:
             print("S3 Upload Failed Error error with AWS S3:\n ", response_error)
         except NoSuchBucket as no_such_bucket:
-            print ("No Such Bucket Name. Please check bucket name:\n", no_such_bucket)
+            print("No Such Bucket Name. Please check bucket name:\n", no_such_bucket)
