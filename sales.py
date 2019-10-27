@@ -26,8 +26,8 @@ def upload_file_aws(aws_file_name, bucket, object_name=None):
 # "Minio S3 Operation Upload File Method"
 def upload_file_minio(minio_bucket_name, minio_file_name):
     endpoint = "127.0.0.1:9000"
-    access_key = "HDGURRIIEODNN7"
-    secret_key = "jdkjUYRJFNXSQsggseIK7MDENGbPxRf"
+    access_key = "access"
+    secret_key = "secret"
     minio_client = Minio(endpoint, access_key, secret_key, secure=False)
     try:
         minio_client.fput_object(minio_bucket_name, minio_file_name, minio_file_name)
